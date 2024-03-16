@@ -3,6 +3,12 @@
     "name": "Zen",
     "description": "Read online articles in \"peace nerds\"",
     "version": "0.0.1",
+    "icons": {
+        "16": "images/zen_logo.png",
+        "32": "images/zen_logo.png",
+        "48": "images/zen_logo.png",
+        "128": "images/zen_logo.png"
+    },
     "action": {
         "default_popup": "index.html"
     }
