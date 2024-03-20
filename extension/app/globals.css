@@ -15,3 +15,7 @@
   --clr-scndry: 0, 0%, 51%;
   --clr-power: 0, 0%, 96%;
 }
+
+.bg-blob {
+  background-image: url("../public//icons/blob.svg");
+}

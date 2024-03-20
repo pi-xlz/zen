@@ -24,7 +24,7 @@ const bricolageGrotesque = localFont({
   variable: "--font-bric",
 });
 const oldschoolGrotesk = localFont({
-  src: "./fonts/OldschoolGroteskVar.ttf",
+  src: "./fonts/OldschoolGrotesk-NormalMedium.otf",
   display: "swap",
   variable: "--font-oldschool",
 });
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${neueMontreal.variable} ${bricolageGrotesque.variable} ${oldschoolGrotesk.variable} bg-clr-base-bg`}
+        className={`${neueMontreal.variable} ${bricolageGrotesque.variable} ${oldschoolGrotesk.variable} bg-clr-base-bg font-sans`}
       >
         {children}
       </body>
