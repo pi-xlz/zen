@@ -33,7 +33,7 @@ const copy = async () => {
   filesToCopy.forEach((file) => {
     copyFile(file, `./dist/${file}`, (err) => {
       if (err) throw err;
-      console.log(`Copied file: ${file} successfully!✅`, file);
+      console.log(`Copied file: ${file} successfully!✅`);
     });
   });
 };
