@@ -12,7 +12,8 @@
     "permissions": [
         "scripting",
         "activeTab",
-        "tabs"
+        "tabs",
+        "scripting"
     ],
     "action": {
         "default_popup": "index.html"

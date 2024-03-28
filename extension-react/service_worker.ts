@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((message: message, sender) => {
   }
 });
 
-async function getCurrentTab() {
+export async function getCurrentTab() {
   const queryOpts = { active: true, lastFocusedWindow: true };
   const [tab] = await chrome.tabs.query(queryOpts);
 
