@@ -3,8 +3,11 @@ import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
 
 export default function App() {
+  const handleToggle = (checked: boolean) => {
+    chrome.runtime.sendMessage({ shouldRemoveScrollbar: checked });
+  };
   return (
-    <div className="bg-clr-base-bg font-montreal">
+    <div className="bg-[#111010] font-montreal">
       <header className="pt-8 px-7">
         <div className="bg-clr-header-bg bg-[url('/blob.svg')] bg-no-repeat w-[319px] flex justify-between items-center px-4 py-3 rounded-lg">
           <h1 className="text-clr-prmry font-oldschool font-medium relative top-1 text-xl">
@@ -28,7 +31,10 @@ export default function App() {
         <NumberInput />
         <div className="flex justify-between items-center mt-5">
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
-          <Switch />
+          <Switch
+            className="bg-clr-prmry"
+            onCheckedChange={handleToggle}
+          />
         </div>
       </main>
       <div className="mt-4"></div>
