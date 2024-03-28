@@ -17,8 +17,8 @@ const findFiles = async (names, exts) => {
     });
 
     if (matchingFiles.length > 0) {
-      console.log("✅Matching Files: ");
-      matchingFiles.forEach((file) => console.log(file));
+      console.log("📁 Matching Files: ");
+      matchingFiles.forEach((file) => console.log(`[${file}]`));
       return matchingFiles;
     } else {
       console.log("❌No Matching Files Found!");

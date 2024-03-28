@@ -7,12 +7,13 @@ chrome.runtime.onMessage.addListener((message: message, sender) => {
   if (message.shouldRemoveScrollbar) {
     console.log("Switch Message: ", message);
     console.log("Sender: ", sender);
-    getTabId().then((id) => {
-      chrome.scripting.executeScript({
-        target: { tabId: id as number },
-        func: removeScrollbar,
-      });
-    });
+    chrome.runtime.sendMessage({ shouldRemove: message.shouldRemoveScrollbar });
+    // getTabId().then((id) => {
+    //   chrome.scripting.executeScript({
+    //     target: { tabId: id as number },
+    //     func: removeScrollbar,
+    //   });
+    // });
   }
 });
 
@@ -23,14 +24,14 @@ export async function getCurrentTab() {
   return tab;
 }
 
-async function getTabId() {
-  const data = await getCurrentTab();
-  const tabId = data.id;
-  return tabId;
-}
-function removeScrollbar() {
-  document.body.style.backgroundColor = "white";
-}
+// async function getTabId() {
+//   const data = await getCurrentTab();
+//   const tabId = data.id;
+//   return tabId;
+// }
+// function removeScrollbar() {
+//   document.body.style.backgroundColor = "white";
+// }
 // function addScrollbar() {}
 // function toggleScrollbar() {}
 // ([tab]) => {
