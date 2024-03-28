@@ -10,7 +10,6 @@
         "128": "/zen_logo.png"
     },
     "permissions": [
-        "scripting",
         "activeTab",
         "tabs",
         "scripting"

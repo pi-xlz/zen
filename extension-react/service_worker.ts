@@ -7,35 +7,16 @@ chrome.runtime.onMessage.addListener((message: message, sender) => {
   if (message.shouldRemoveScrollbar) {
     console.log("Switch Message: ", message);
     console.log("Sender: ", sender);
-    chrome.runtime.sendMessage({ shouldRemove: message.shouldRemoveScrollbar });
-    // getTabId().then((id) => {
-    //   chrome.scripting.executeScript({
-    //     target: { tabId: id as number },
-    //     func: removeScrollbar,
-    //   });
-    // });
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const currentTabId = tabs[0].id;
+      console.log(currentTabId);
+      // Perform tab manipulation based on the currentTabId
+      chrome.scripting
+        .insertCSS({
+          target: { tabId: currentTabId as number },
+          css: "body { background-color: red !important; }",
+        })
+        .then(() => console.log("CSS Injected!"));
+    });
   }
 });
-
-export async function getCurrentTab() {
-  const queryOpts = { active: true, lastFocusedWindow: true };
-  const [tab] = await chrome.tabs.query(queryOpts);
-
-  return tab;
-}
-
-// async function getTabId() {
-//   const data = await getCurrentTab();
-//   const tabId = data.id;
-//   return tabId;
-// }
-// function removeScrollbar() {
-//   document.body.style.backgroundColor = "white";
-// }
-// function addScrollbar() {}
-// function toggleScrollbar() {}
-// ([tab]) => {
-//     if (chrome.runtime.lastError) console.error(chrome.runtime.lastError);
-//     console.log(tab);
-//     return tab;
-//   }
