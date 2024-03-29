@@ -11,10 +11,11 @@ chrome.runtime.onMessage.addListener((message: message, sender) => {
       const currentTabId = tabs[0].id;
       console.log(currentTabId);
       // Perform tab manipulation based on the currentTabId
+      const css = " ::-webkit-scrollbar { width: 0 !important; } ";
       chrome.scripting
         .insertCSS({
           target: { tabId: currentTabId as number },
-          css: "body { background-color: red !important; }",
+          css: css,
         })
         .then(() => console.log("CSS Injected!"));
     });
