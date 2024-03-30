@@ -1,10 +1,18 @@
+import type { Response } from "@/service_worker";
 import { PopoutIcon, PowerIcon } from "./assets/icons/icons";
 import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
+import { useState } from "react";
 
 export default function App() {
-  const handleToggle = (checked: boolean) => {
-    chrome.runtime.sendMessage({ shouldRemoveScrollbar: checked });
+  const [removeScrollbar, setRemoveScrollbar] = useState(false);
+  const handleToggle = () => {
+    setRemoveScrollbar((p) => !p);
+    chrome.runtime.sendMessage({ removeScrollbar }, (response: Response) => {
+      console.log(response);
+      // if (Object.keys(response).length)
+      //   setShowScrollbar(response.scrollbarRemoved);
+    });
   };
   return (
     <div className="bg-[#111010] font-montreal">
@@ -33,6 +41,7 @@ export default function App() {
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
           <Switch
             className="bg-clr-prmry"
+            checked={removeScrollbar}
             onCheckedChange={handleToggle}
           />
         </div>
