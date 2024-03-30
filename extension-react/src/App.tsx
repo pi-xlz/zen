@@ -12,6 +12,7 @@ export default function App() {
       console.log(response);
       // if (Object.keys(response).length)
       //   setShowScrollbar(response.scrollbarRemoved);
+      console.log(response);
     });
   };
   return (
