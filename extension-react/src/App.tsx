@@ -9,10 +9,10 @@ export default function App() {
   const handleToggle = () => {
     setRemoveScrollbar((p) => !p);
     chrome.runtime.sendMessage({ removeScrollbar }, (response: Response) => {
-      console.log(response);
       // if (Object.keys(response).length)
       //   setShowScrollbar(response.scrollbarRemoved);
-      console.log(response);
+      console.log("Response: ", response);
+      // chrome.storage.local.set({ random: "yes" });////////////
     });
   };
   return (
@@ -38,8 +38,9 @@ export default function App() {
         </p>
         <div className="mt-4"></div>
         <NumberInput />
-        <div className="flex justify-between items-center mt-5">
+        <div className="flex justify-between  items-center mt-5">
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
+          {/* // todo: check if there's a scrollbar present on the page, if there isn't disable the switch */}
           <Switch
             className="bg-clr-prmry"
             checked={removeScrollbar}
