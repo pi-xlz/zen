@@ -42,7 +42,6 @@ export default function App() {
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
           {/* // todo: check if there's a scrollbar present on the page, if there isn't disable the switch */}
           <Switch
-            className="bg-clr-prmry"
             checked={removeScrollbar}
             onCheckedChange={handleToggle}
           />
