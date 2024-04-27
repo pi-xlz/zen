@@ -2,19 +2,33 @@ import type { Response } from "@/service_worker";
 import { PopoutIcon, PowerIcon } from "./assets/icons/icons";
 import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
+const storage = chrome.storage.local;
+
+// todo: read scrollbar state from storage when extension loads
+// todo: that is, synchronize the scrollbar state with the switch when page loads
 export default function App() {
-  const [removeScrollbar, setRemoveScrollbar] = useState(false);
+  const [shouldRemoveScrollbar, setShouldRemoveScrollbar] = useState(false);
   const handleToggle = () => {
-    setRemoveScrollbar((p) => !p);
-    chrome.runtime.sendMessage({ removeScrollbar }, (response: Response) => {
-      // if (Object.keys(response).length)
-      //   setShowScrollbar(response.scrollbarRemoved);
-      console.log("Response: ", response);
-      // chrome.storage.local.set({ random: "yes" });////////////
-    });
+    setShouldRemoveScrollbar((p) => !p);
   };
+
+  chrome.runtime.sendMessage(
+    { shouldRemoveScrollbar, message: "Remove the scrollbar!" },
+    (response: Response) => {
+      console.log("Worker's Response: ", response);
+    }
+  );
+
+  // todo: synchronize UI with storage
+  useEffect(() => {
+    storage.get("isScrollbarRemoved", (items) => {
+      console.log("Scrollar state(from local): ", items);
+      setShouldRemoveScrollbar(items.isScrollbarRemoved);
+    });
+  }, [shouldRemoveScrollbar]);
+
   return (
     <div className="bg-[#111010] font-montreal">
       <header className="pt-8 px-7">
@@ -42,7 +56,7 @@ export default function App() {
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
           {/* // todo: check if there's a scrollbar present on the page, if there isn't disable the switch */}
           <Switch
-            checked={removeScrollbar}
+            checked={shouldRemoveScrollbar}
             onCheckedChange={handleToggle}
           />
         </div>

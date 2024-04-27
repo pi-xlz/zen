@@ -3,10 +3,10 @@ const storage = chrome.storage.local;
 // console.log(storage.get());
 
 chrome.runtime.onMessage.addListener((message, _, sendRes) => {
-  console.log("Sender Message: ", message);
-  if (message.removeScrollbar) {
-    modScrollbar("remove", sendRes);
-  } else modScrollbar("add", sendRes);
+  console.log("Extension's Message: ", message);
+  if (message.shouldRemoveScrollbar) {
+    modScrollbar("REMOVE", sendRes);
+  } else modScrollbar("ADD", sendRes);
   return true;
 });
 
@@ -17,14 +17,17 @@ const modScrollbar = (op, sendResponse) => {
     const currentTabId = tabs[0].id;
     if (!currentTabId) {
       console.error("Unable to get current tab ID");
-      sendResponse({ scrollbarRemoved: false });
+      sendResponse({
+        isScrollbarRemoved: false,
+        message: "Couldn't get Tab ID. Try focusing on the Tab",
+      });
       return;
     }
 
     const css = " ::-webkit-scrollbar { width: 0 !important; } ";
 
     const actionPromise =
-      op === "add"
+      op === "REMOVE"
         ? chrome.scripting.insertCSS({
             target: { tabId: currentTabId },
             css: css,
@@ -36,17 +39,21 @@ const modScrollbar = (op, sendResponse) => {
 
     actionPromise
       .then(() => {
-        storage.set({ isScrollbar: op === "add" }, () => {
-          console.log("Storage Message: Removed Scrollbar");
-          sendResponse({ scrollbarRemoved: true });
-          storage.get("isScrollbar", (data) =>
-            console.log("isScrollbar:", data.isScrollbar)
-          );
+        // todo: revise implementation. Storage seems to always be in "bad" state
+        storage.set({ isScrollbarRemoved: !(op === "REMOVE") }, () => {
+          sendResponse({
+            isScrollbarRemoved: op === "REMOVE",
+            message:
+              op === "REMOVE" ? "Scrollbar Removed!" : "Scrollbar added!",
+          });
         });
       })
       .catch((err) => {
         console.error("Error modifying scrollbar:", err);
-        sendResponse({ scrollbarRemoved: false });
+        sendResponse({
+          isScrollbarRemoved: false,
+          message: "Error modifying scrollbar",
+        });
       });
   });
 };
