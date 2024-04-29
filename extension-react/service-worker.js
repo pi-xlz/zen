@@ -40,7 +40,7 @@ const modScrollbar = (op, sendResponse) => {
     actionPromise
       .then(() => {
         // todo: revise implementation. Storage seems to always be in "bad" state
-        storage.set({ isScrollbarRemoved: !(op === "REMOVE") }, () => {
+        storage.set({ isScrollbarRemoved: op === "REMOVE" }, () => {
           sendResponse({
             isScrollbarRemoved: op === "REMOVE",
             message:

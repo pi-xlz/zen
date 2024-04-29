@@ -1,8 +1,7 @@
-import type { Response } from "@/service_worker";
 import { PopoutIcon, PowerIcon } from "./assets/icons/icons";
 import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const storage = chrome.storage.local;
 
@@ -10,24 +9,27 @@ const storage = chrome.storage.local;
 // todo: that is, synchronize the scrollbar state with the switch when page loads
 export default function App() {
   const [shouldRemoveScrollbar, setShouldRemoveScrollbar] = useState(false);
-  const handleToggle = () => {
-    setShouldRemoveScrollbar((p) => !p);
+  const handleToggle = (checked: boolean) => {
+    setShouldRemoveScrollbar(checked);
+    chrome.runtime.sendMessage(
+      {
+        shouldRemoveScrollbar: checked,
+        message: checked ? "Remove Scrollbar" : "Add Scrollbar",
+      },
+      (res) => {
+        console.log("SW Response: ", res);
+      }
+    );
   };
 
-  chrome.runtime.sendMessage(
-    { shouldRemoveScrollbar, message: "Remove the scrollbar!" },
-    (response: Response) => {
-      console.log("Worker's Response: ", response);
-    }
-  );
-
-  // todo: synchronize UI with storage
   useEffect(() => {
     storage.get("isScrollbarRemoved", (items) => {
-      console.log("Scrollar state(from local): ", items);
-      setShouldRemoveScrollbar(items.isScrollbarRemoved);
+      console.log("localstorage items: ", items);
+      if (items !== undefined) {
+        setShouldRemoveScrollbar(items.isScrollbarRemoved);
+      }
     });
-  }, [shouldRemoveScrollbar]);
+  }, []);
 
   return (
     <div className="bg-[#111010] font-montreal">
@@ -54,7 +56,6 @@ export default function App() {
         <NumberInput />
         <div className="flex justify-between  items-center mt-5">
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
-          {/* // todo: check if there's a scrollbar present on the page, if there isn't disable the switch */}
           <Switch
             checked={shouldRemoveScrollbar}
             onCheckedChange={handleToggle}
@@ -65,7 +66,7 @@ export default function App() {
       <footer className="bg-clr-footer-bg flex items-center justify-center px-7 py-4">
         <button
           disabled
-          className="w-[319px] bg-clr-footer-btn flex items-center justify-center gap-1 px-[100px] py-[10px] rounded-[5px] text-clr-prmry-txt cursor-not-allowed"
+          className="w-[319px] bg-clr-footer-btn flex items-center justify-center gap-1 px-[100px] py-[10px] rounded-[5px] text-clr-prmry-txt cursor-not-allowed opacity-50"
         >
           Use Floater{" "}
           <span>
