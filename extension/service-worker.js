@@ -1,14 +1,30 @@
 const storage = chrome.storage.local;
+const windows = chrome.windows;
+const runtime = chrome.runtime;
 
 // console.log(storage.get());
 
-chrome.runtime.onMessage.addListener((message, _, sendRes) => {
-  console.log("Extension's Message: ", message);
+let extensionId;
+
+runtime.onMessage.addListener((message, sender, sendRes) => {
+  extensionId = sender.id;
+  console.log("Sender ID: ", extensionId);
+  // console.log("Extension's Message: ", message);
   if (message.shouldRemoveScrollbar) {
     modScrollbar("REMOVE", sendRes);
   } else modScrollbar("ADD", sendRes);
   return true;
 });
+
+windows.onFocusChanged.addListener(
+  (windowId) => {
+    console.log("Window ID: ", windowId);
+    runtime.sendMessage(extensionId, {
+      windowId,
+    });
+  },
+  { windowTypes: ["normal"] }
+);
 
 // todo: in the error boundary/when catching the error(which would occur if the user isn't focused on a tab)
 // todo: give user some feedback, the switch should probably not work/be disabled at that point

@@ -2,13 +2,17 @@ import { PopoutIcon, PowerIcon } from "./assets/icons/icons";
 import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
 import { useEffect, useState } from "react";
+// import { CURRENT_WINDOW } from "./lib/utils";
 
 const storage = chrome.storage.local;
+const windows = chrome.windows;
 
 // todo: read scrollbar state from storage when extension loads
 // todo: that is, synchronize the scrollbar state with the switch when page loads
 export default function App() {
   const [shouldRemoveScrollbar, setShouldRemoveScrollbar] = useState(false);
+  // const [winId, setWinId] = useState<number | undefined>();
+
   const handleToggle = (checked: boolean) => {
     setShouldRemoveScrollbar(checked);
     chrome.runtime.sendMessage(
@@ -22,14 +26,28 @@ export default function App() {
     );
   };
 
+  // chrome.runtime.onMessage.addListener((message) => {
+  //   console.log("Tab Focus Changed!", message);
+  //   setWinId(message.windowId);
+  // });
+
   useEffect(() => {
     storage.get("isScrollbarRemoved", (items) => {
-      console.log("localstorage items: ", items);
+      // console.log("localstorage items: ", items);
       if (items !== undefined) {
         setShouldRemoveScrollbar(items.isScrollbarRemoved);
       }
     });
+    windows.getLastFocused((window) => {
+      console.log("Last Focused Win: ", {
+        windowId: window.id,
+        windowType: window.type,
+      });
+      // setWinId(window.id);
+    });
   }, []);
+
+  // const isSwitchDisabled = CURRENT_WINDOW.id !== winId;
 
   return (
     <div className="bg-[#111010] font-montreal">
@@ -57,6 +75,7 @@ export default function App() {
         <div className="flex justify-between  items-center mt-5">
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
           <Switch
+            // disabled={isSwitchDisabled}
             checked={shouldRemoveScrollbar}
             onCheckedChange={handleToggle}
           />
