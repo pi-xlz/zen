@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "Zen",
+    "description": "Read online articles in \"peace nerds\"",
+    "version": "0.0.1",
+    "icons": {
+        "16": "/zen_logo.png",
+        "32": "/zen_logo.png",
+        "48": "/zen_logo.png",
+        "128": "/zen_logo.png"
+    },
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "scripting",
+        "storage"
+    ],
+    "action": {
+        "default_popup": "index.html"
+    },
+    "background": {
+        "service_worker": "sw.js"
+    }
+}
