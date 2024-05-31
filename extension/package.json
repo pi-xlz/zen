@@ -8,8 +8,7 @@
     "build": "tsc && vite build && npm run postbuild",
     "postbuild": "node postbuild.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "comp": "npx tsc service_worker.ts --target es2020 --lib es2020,DOM"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.0",

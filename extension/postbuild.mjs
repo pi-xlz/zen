@@ -1,10 +1,11 @@
 import { copyFile } from "fs";
 import { readdir } from "fs/promises";
 
+const DIR = "../misc/dist";
+
 const findFiles = async (names, exts) => {
   try {
-    const dir = "./";
-    const files = await readdir(dir);
+    const files = await readdir(DIR);
 
     const matchingFiles = files.filter((file) => {
       const fileParts = file.split(".");
@@ -28,13 +29,14 @@ const findFiles = async (names, exts) => {
   }
 };
 
-const names = ["service-worker", "content", "manifest"];
+const names = ["sw", "manifest"];
 const extensions = ["js", "json"];
 
 const copy = async () => {
   const filesToCopy = await findFiles(names, extensions);
-  filesToCopy.forEach((file) => {
-    copyFile(file, `./dist/${file}`, (err) => {
+  // fail gracefully
+  filesToCopy?.forEach((file) => {
+    copyFile(`${DIR}/${file}`, `./dist/${file}`, (err) => {
       if (err) throw err;
       console.log(`Copied file: ${file} successfully!✅`);
     });
