@@ -3,10 +3,11 @@
     // Base Options recommended for all projects
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2022",
+    "target": "ES2022",
     "allowJs": true,
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
-    "moduleDetection": "force",
+    "moduleDetection": "auto",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     // Enable strict type checking so you can catch bugs early
@@ -17,7 +18,7 @@
     "module": "NodeNext",
     "outDir": "dist",
     // Include the DOM types
-    "lib": ["es2022", "dom", "dom.iterable"]
+    "lib": ["ES6", "dom", "dom.iterable"]
   },
   "watchOptions": {
     // Use native file system events for files and directories
@@ -29,25 +30,16 @@
     // Don't coalesce watch notification
     "synchronousWatchDirectory": true,
     // Finally, two additional settings for reducing the amount of possible
-    // files to track  work from these directories
+    // files to track work from these directories
     "excludeDirectories": [
       "**/node_modules",
       "_build",
-      "extension/**/*",
-      "extension[dep]/**/*",
       "extension",
-      "extension[dep]",
-      "**/extension",
-      "**/extension[dep]"
+      "extension[dep]"
     ],
-    "excludeFiles": [
-      "build/fileWhichChangesOften.ts",
-      "extension/**/*",
-      "extension[dep]/**/*",
-      "types.ts"
-    ]
+    "excludeFiles": ["extension/**/*", "extension[dep]/**/*"]
   },
   // Include the necessary files for your project
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "extension", "extension[dep]", "types.ts"]
+  "exclude": ["node_modules", "extension", "extension[dep]"]
 }
