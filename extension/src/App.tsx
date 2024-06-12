@@ -1,29 +1,20 @@
 import { PopoutIcon, PowerIcon } from "./assets/icons/icons";
 import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
-import { useEffect, useState } from "react";
-// import { CURRENT_WINDOW } from "./lib/utils";
 
-const storage = chrome.storage.local;
-const windows = chrome.windows;
+import { useZenState } from "./hooks/useZenState";
 
 // todo: read scrollbar state from storage when extension loads
 // todo: that is, synchronize the scrollbar state with the switch when page loads
 export default function App() {
-  const [shouldRemoveScrollbar, setShouldRemoveScrollbar] = useState(false);
-  // const [winId, setWinId] = useState<number | undefined>();
+  const { sendMessage, scrollbarState, removeScrollbar } = useZenState();
 
   const handleToggle = (checked: boolean) => {
-    setShouldRemoveScrollbar(checked);
-    chrome.runtime.sendMessage(
-      {
-        shouldRemoveScrollbar: checked,
-        message: checked ? "Remove Scrollbar" : "Add Scrollbar",
-      },
-      (res) => {
-        console.log("SW Response: ", res);
-      }
-    );
+    removeScrollbar(checked);
+    sendMessage({
+      shouldRemoveScrollbar: checked,
+      message: checked ? "Remove Scrollbar" : "Add Scrollbar",
+    });
   };
 
   // chrome.runtime.onMessage.addListener((message) => {
@@ -31,30 +22,12 @@ export default function App() {
   //   setWinId(message.windowId);
   // });
 
-  useEffect(() => {
-    storage.get("isScrollbarRemoved", (items) => {
-      // console.log("localstorage items: ", items);
-      if (items !== undefined) {
-        setShouldRemoveScrollbar(items.isScrollbarRemoved);
-      }
-    });
-    windows.getLastFocused((window) => {
-      console.log("Last Focused Win: ", {
-        windowId: window.id,
-        windowType: window.type,
-      });
-      // setWinId(window.id);
-    });
-  }, []);
-
-  // const isSwitchDisabled = CURRENT_WINDOW.id !== winId;
-
   return (
     <div className="bg-[#111010] font-montreal">
       <header className="pt-8 px-7">
         <div className="bg-clr-header-bg bg-[url('/blob.svg')] bg-no-repeat w-[319px] flex justify-between items-center px-4 py-3 rounded-lg">
           <h1 className="text-clr-prmry font-oldschool font-medium relative top-1 text-xl">
-            Zen
+            Zen<sup>x</sup>
           </h1>
           <button>
             <PowerIcon />
@@ -75,8 +48,7 @@ export default function App() {
         <div className="flex justify-between  items-center mt-5">
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
           <Switch
-            // disabled={isSwitchDisabled}
-            checked={shouldRemoveScrollbar}
+            checked={scrollbarState}
             onCheckedChange={handleToggle}
           />
         </div>
@@ -87,7 +59,7 @@ export default function App() {
           disabled
           className="w-[319px] bg-clr-footer-btn flex items-center justify-center gap-1 px-[100px] py-[10px] rounded-[5px] text-clr-prmry-txt cursor-not-allowed opacity-50"
         >
-          Use Floater{" "}
+          Open in <span className="underline text-clr-prmry">Zen</span>{" "}
           <span>
             <PopoutIcon />
           </span>
