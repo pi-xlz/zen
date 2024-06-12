@@ -1,8 +1,9 @@
 "use strict";
-//? CONSTANTS
+Object.defineProperty(exports, "__esModule", { value: true });
 const storage = chrome.storage.local;
 const windows = chrome.windows;
 const runtime = chrome.runtime;
+// console.log(storage.get());
 let extensionId;
 runtime.onMessage.addListener((message, sender, sendRes) => {
     extensionId = sender.id;

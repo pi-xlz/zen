@@ -1,17 +1,10 @@
-//? TYPES
-// tab modification operations
-type ModOp = "REMOVE" | "ADD";
+import type types = require("./types");
 
-// SW Response
-type SWResponse = {
-  isScrollbarRemoved: boolean;
-  message: string;
-};
-
-//? CONSTANTS
 const storage = chrome.storage.local;
 const windows = chrome.windows;
 const runtime = chrome.runtime;
+
+// console.log(storage.get());
 
 let extensionId: any;
 
@@ -37,7 +30,10 @@ windows.onFocusChanged.addListener(
 
 // todo: in the error boundary/when catching the error(which would occur if the user isn't focused on a tab)
 // todo: give user some feedback, the switch should probably not work/be disabled at that point
-const modScrollbar = (op: ModOp, sendResponse: (arg: SWResponse) => void) => {
+const modScrollbar = (
+  op: types.ModOp,
+  sendResponse: (arg: types.SWResponse) => void
+) => {
   chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const currentTabId = tabs[0]?.id;
     if (!currentTabId) {

@@ -1,26 +1,53 @@
 import { PopoutIcon, PowerIcon } from "./assets/icons/icons";
 import NumberInput from "./components/number-input";
 import { Switch } from "./components/switch";
+import { useEffect, useState } from "react";
+// import { CURRENT_WINDOW } from "./lib/utils";
 
-import { useZenState } from "./hooks/useZenState";
+const storage = chrome.storage.local;
+const windows = chrome.windows;
 
 // todo: read scrollbar state from storage when extension loads
 // todo: that is, synchronize the scrollbar state with the switch when page loads
 export default function App() {
-  const { sendMessage, scrollbarState, removeScrollbar } = useZenState();
+  const [shouldRemoveScrollbar, setShouldRemoveScrollbar] = useState(false);
+  // const [winId, setWinId] = useState<number | undefined>();
 
   const handleToggle = (checked: boolean) => {
-    removeScrollbar(checked);
-    sendMessage({
-      shouldRemoveScrollbar: checked,
-      message: checked ? "Remove Scrollbar" : "Add Scrollbar",
-    });
+    setShouldRemoveScrollbar(checked);
+    chrome.runtime.sendMessage(
+      {
+        shouldRemoveScrollbar: checked,
+        message: checked ? "Remove Scrollbar" : "Add Scrollbar",
+      },
+      (res) => {
+        console.log("SW Response: ", res);
+      }
+    );
   };
 
   // chrome.runtime.onMessage.addListener((message) => {
   //   console.log("Tab Focus Changed!", message);
   //   setWinId(message.windowId);
   // });
+
+  useEffect(() => {
+    storage.get("isScrollbarRemoved", (items) => {
+      // console.log("localstorage items: ", items);
+      if (items !== undefined) {
+        setShouldRemoveScrollbar(items.isScrollbarRemoved);
+      }
+    });
+    windows.getLastFocused((window) => {
+      console.log("Last Focused Win: ", {
+        windowId: window.id,
+        windowType: window.type,
+      });
+      // setWinId(window.id);
+    });
+  }, []);
+
+  // const isSwitchDisabled = CURRENT_WINDOW.id !== winId;
 
   return (
     <div className="bg-[#111010] font-montreal">
@@ -48,7 +75,8 @@ export default function App() {
         <div className="flex justify-between  items-center mt-5">
           <h2 className="text-clr-prmry-txt">Remove Scrollbar</h2>
           <Switch
-            checked={scrollbarState}
+            // disabled={isSwitchDisabled}
+            checked={shouldRemoveScrollbar}
             onCheckedChange={handleToggle}
           />
         </div>
